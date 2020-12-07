@@ -231,7 +231,6 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                 }else{
                     Toast.makeText(getApplicationContext(), "DRY NOW!!", Toast.LENGTH_SHORT).show();
                 }
-
                 dump_position = position;
                 position = random.nextInt(dataModelList.size());
 

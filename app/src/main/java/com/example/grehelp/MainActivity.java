@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     private SharedPreferences sharedPreferences;
 
     private boolean DUMP_FLAG = false;
+    private boolean COUNT_FLAG = false;
 
     private RecyclerView recyclerView;
 
@@ -107,9 +109,11 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     private int length_dataModelList = 0 ;
     private int position;
     private int dump_position;
+    private int count = 0;
 
     private Random random = new Random();
 
+    private RadioButton radioButton;
     private Button btn_next;
     private Button btn_dump;
     private Button btn_update;
@@ -117,6 +121,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     private TextView tv_word;
     private TextView tv_desc;
     private TextView tv_size;
+    private TextView tv_count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,18 +140,37 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
 
     }
 
-    private int wordsToNotify(){
-        int num = 0 ;
-        int temp = length_dataModelList - dataModelList.size();
-        if(temp > 120){
-                num = 120 - (temp - 120); // 240 - temp
-        }else if( length_dataModelList - dataModelList.size() < 120){
-            num = 240 - temp;
-        }
-        
-        return num;
-    }
+//    private int wordsToNotify(){
+//        int num = 0 ;
+//        int temp = length_dataModelList - dataModelList.size();
+//        if(temp > 120){
+//                num = 120 - (temp - 120); // 240 - temp
+//        }else if( length_dataModelList - dataModelList.size() < 120){
+//            num = 240 - temp;
+//        }
+//
+//        return num;
+//    }
 
+
+    public void onRadioButtonClicked(View view) {
+
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radiobutton_count:
+                if (checked)
+                    count = Integer.parseInt(tv_count.getText().toString());
+                    COUNT_FLAG = true;
+                    break;
+            case R.id.radiobutton_dontcount:
+                if (checked)
+                    tv_count.setText( String.valueOf(0));
+                    COUNT_FLAG = false;
+                    break;
+        }
+    }
 
     private void init(){
 
@@ -205,6 +229,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
         tv_desc = findViewById(R.id.textView_desc);
         tv_size = findViewById(R.id.textview_size);
         tv_size.setText("---");
+        tv_count = findViewById(R.id.textview_count);
 
         recyclerView = findViewById(R.id.recyclerView_words);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -217,6 +242,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     }
 
     private void clickListeners() {
+
         btn_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -233,6 +259,12 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                 }
                 dump_position = position;
                 position = random.nextInt(dataModelList.size());
+
+                if(COUNT_FLAG){
+                    count = Integer.parseInt( tv_count.getText().toString());
+                    count++;
+                    tv_count.setText(String.valueOf(count));
+                }
 
             }
         });

@@ -4,11 +4,23 @@ public class DataModel {
 
     String word;
     String desc;
+    String syn;
 
-    public DataModel(String word, String desc) {
+
+    public DataModel(String word, String desc, String syn) {
         this.word = word;
         this.desc = desc;
+        this.syn = syn;
     }
+
+    public String getSyn() {
+        return syn;
+    }
+
+    public void setSyn(String syn) {
+        this.syn = syn;
+    }
+
 
     public String getWord() {
         return word;

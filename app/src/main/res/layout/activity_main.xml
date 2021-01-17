@@ -54,7 +54,7 @@
 
         <Button
             android:id="@+id/button_dump"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="40dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -87,14 +87,31 @@
             android:textSize="15dp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView_desc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <LinearLayout
             android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="---"
-            />
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView_desc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"
+                android:gravity="center"
+                android:text="---" />
+
+            <TextView
+                android:fontFamily="serif-monospace"
+                android:id="@+id/textView_synonym"
+                android:layout_marginLeft="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"
+                android:gravity="center"
+                android:text="---" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/button_update"

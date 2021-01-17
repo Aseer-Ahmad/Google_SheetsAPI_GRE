@@ -40,10 +40,12 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordLi
         DataModel dataModel = list.get(position);
 
         holder.textView.setText(dataModel.getWord());
+
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 holder.textView_desc.setText(dataModel.getDesc());
+                holder.textView_syn.setText(dataModel.getSyn());
             }
         });
     }
@@ -58,11 +60,13 @@ public class WordListAdapter extends RecyclerView.Adapter<WordListAdapter.WordLi
 
         private TextView textView;
         private TextView textView_desc;
+        private TextView textView_syn;
 
         public WordListViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textView_desc = (TextView) ((Activity) context).findViewById(R.id.textView_desc);
+            textView_syn = (TextView) ((Activity) context).findViewById(R.id.textView_synonym);
             textView = itemView.findViewById(R.id.textview_wordlistItem);
         }
     }

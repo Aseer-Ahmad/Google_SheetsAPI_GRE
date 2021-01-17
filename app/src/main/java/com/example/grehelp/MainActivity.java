@@ -120,6 +120,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     private ImageButton btn_replay;
     private TextView tv_word;
     private TextView tv_desc;
+    private TextView tv_syn;
     private TextView tv_size;
     private TextView tv_count;
 
@@ -227,6 +228,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
         btn_replay.setEnabled(false);
         tv_word = findViewById(R.id.textView_word);
         tv_desc = findViewById(R.id.textView_desc);
+        tv_syn = findViewById(R.id.textView_synonym);
         tv_size = findViewById(R.id.textview_size);
         tv_size.setText("---");
         tv_count = findViewById(R.id.textview_count);
@@ -247,6 +249,8 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             @Override
             public void onClick(View v) {
                 tv_desc.setText("---");
+                tv_syn.setText("---");
+
                 tv_size.setText(String.valueOf(dataModelList.size()));
                 DUMP_FLAG = false;
 
@@ -255,7 +259,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                     tv_word.setText(dataModelList.get(position).getWord() );
                     wordListAdapter.notifyDataSetChanged();
                 }else{
-                    Toast.makeText(getApplicationContext(), "DRY NOW!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "LIST EMPTY", Toast.LENGTH_SHORT).show();
                 }
                 dump_position = position;
                 position = random.nextInt(dataModelList.size());
@@ -275,6 +279,8 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             public void onClick(View v) {
                 if(DUMP_FLAG == false) {
                     tv_desc.setText(dataModelList.get(dump_position).getDesc());
+                    tv_syn.setText( dataModelList.get(dump_position).getSyn());
+
                     dataModelList.add(dataModelList.get(dump_position));
                     DUMP_FLAG = true;
                 }
@@ -286,6 +292,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             public void onClick(View v) {
                 dataModelList.clear();
                 wordListAdapter.notifyDataSetChanged();
+                tv_count.setText( String.valueOf(0));
                 getResultsFromApi();
             }
         });
@@ -384,7 +391,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new com.google.api.services.sheets.v4.Sheets.Builder(
                     transport, jsonFactory, credential)
-                    .setApplicationName("Google Sheets API Android Quickstart")
+                    .setApplicationName("Google Sheets API Android")
                     .build();
         }
 
@@ -404,15 +411,10 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             }
         }
 
-        /**
-         * Fetch a list of names and majors of students in a sample spreadsheet:
-         * https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-         * @return List of names and majors
-         * @throws IOException
-         */
+
         private List<DataModel> getDataFromApi() throws IOException {
             String spreadsheetId = "10cg7bbfh0QaWO--ZLv0Ot6A7UHjq6oWO-trFhO86HkA";
-            String range = "GWM!A1:C";
+            String range = "GWM!A1:D";  //A1:C
 
             ValueRange response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
@@ -425,11 +427,12 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             if (values != null) {
                 //results.add("Name, Major");
                 for (List row : values) {
-                    if(row.size() > 2) {
-                        dataModelList.add(new DataModel(String.valueOf(row.get(1)), String.valueOf(row.get(2)) ));
-                    }else{
-                        dataModelList.add(new DataModel(String.valueOf(row.get(1)), "" ));
-                    }
+//                    if(row.size() > 2) {
+//                        dataModelList.add(new DataModel(String.valueOf(row.get(1)), String.valueOf(row.get(2)) ));
+//                    }else{
+//                        dataModelList.add(new DataModel(String.valueOf(row.get(1)), "" ));
+//                    }
+                      dataModelList.add(new DataModel( String.valueOf(row.get(1)), String.valueOf(row.get(2)),String.valueOf(row.get(3))  ));
 
                 }
             }

@@ -251,18 +251,25 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                 tv_desc.setText("---");
                 tv_syn.setText("---");
 
-                tv_size.setText(String.valueOf(dataModelList.size()));
+
                 DUMP_FLAG = false;
 
-                if(!dataModelList.isEmpty()) {
+                Log.d("SIZE  ", String.valueOf(dataModelList.size()));
+                if(dataModelList.size() > 1) {
                     dataModelList.remove(position);
                     tv_word.setText(dataModelList.get(position).getWord() );
+                    tv_size.setText(String.valueOf(dataModelList.size()-1));
                     wordListAdapter.notifyDataSetChanged();
                 }else{
-                    Toast.makeText(getApplicationContext(), "LIST EMPTY", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "LIST EMPTY!", Toast.LENGTH_SHORT).show();
+                    dataModelList.clear();
+                    wordListAdapter.notifyDataSetChanged();
                 }
                 dump_position = position;
-                position = random.nextInt(dataModelList.size());
+                if(dataModelList.size() > 1)
+                    position = random.nextInt(dataModelList.size()-1);
+                else
+                    position = 0;
 
                 if(COUNT_FLAG){
                     count = Integer.parseInt( tv_count.getText().toString());

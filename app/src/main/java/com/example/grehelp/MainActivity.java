@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
 
     ProgressDialog mProgress;
     //----------------------
+    private String ssheetrange;
+
     private SharedPreferences sharedPreferences;
 
     private boolean DUMP_FLAG = false;
@@ -117,6 +119,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     private Button btn_next;
     private Button btn_dump;
     private Button btn_update;
+    private Button btn_update2;
     private ImageButton btn_replay;
     private TextView tv_word;
     private TextView tv_desc;
@@ -224,6 +227,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
         btn_next = findViewById(R.id.button_next);
         btn_next.setEnabled(false);
         btn_update = findViewById(R.id.button_update);
+        btn_update2 = findViewById(R.id.button_update2);
         btn_replay = findViewById(R.id.button_replay);
         btn_replay.setEnabled(false);
         tv_word = findViewById(R.id.textView_word);
@@ -300,6 +304,22 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                 dataModelList.clear();
                 wordListAdapter.notifyDataSetChanged();
                 tv_count.setText( String.valueOf(0));
+
+                //set sheeet range
+                ssheetrange = "GWM!A1:D";
+                getResultsFromApi();
+            }
+        });
+
+        btn_update2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dataModelList.clear();
+                wordListAdapter.notifyDataSetChanged();
+                tv_count.setText( String.valueOf(0));
+
+                //set sheeet range
+                ssheetrange = "GWM2!A1:D";
                 getResultsFromApi();
             }
         });
@@ -324,6 +344,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
         } else if (! isDeviceOnline()) {
             Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
         } else {
+            Log.d("getResultsFromApi" , "making task request");
             new MakeRequestTask(mCredential).execute();
         }
     }
@@ -394,7 +415,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
 
 
         MakeRequestTask(GoogleAccountCredential credential) {
-            HttpTransport transport = new NetHttpTransport();//AndroidHttp.newCompatibleTransport();
+            HttpTransport transport = new NetHttpTransport(); //AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new com.google.api.services.sheets.v4.Sheets.Builder(
                     transport, jsonFactory, credential)
@@ -409,6 +430,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
         @Override
         protected List<DataModel> doInBackground(Void... params) {
             try {
+                Log.d("doInBackground" , "fetching data");
                 return getDataFromApi();
             } catch (Exception e) {
                 mLastError = e;
@@ -421,10 +443,10 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
 
         private List<DataModel> getDataFromApi() throws IOException {
             String spreadsheetId = "10cg7bbfh0QaWO--ZLv0Ot6A7UHjq6oWO-trFhO86HkA";
-            String range = "GWM!A1:D";  //A1:C
+            //ssheetrange = "GWM!A1:D";
 
             ValueRange response = this.mService.spreadsheets().values()
-                    .get(spreadsheetId, range)
+                    .get(spreadsheetId, ssheetrange)
                     .execute();
 
             List<List<Object>> values = response.getValues();

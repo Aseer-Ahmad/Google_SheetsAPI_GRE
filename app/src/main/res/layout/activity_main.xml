@@ -119,7 +119,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="100dp"
-            android:text="Update\nList" />
+            android:text="Update List 1" />
+
+        <Button
+            android:id="@+id/button_update2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Update List 2" />
+
+
 
     </LinearLayout>
 

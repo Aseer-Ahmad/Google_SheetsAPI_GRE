@@ -112,6 +112,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     private int position;
     private int dump_position;
     private int count = 0;
+    private DataModel dumpWord;
 
     private Random random = new Random();
 
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
     private Button btn_dump;
     private Button btn_update;
     private Button btn_update2;
+    private Button btn_update3;
     private ImageButton btn_replay;
     private TextView tv_word;
     private TextView tv_desc;
@@ -228,6 +230,7 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
         btn_next.setEnabled(false);
         btn_update = findViewById(R.id.button_update);
         btn_update2 = findViewById(R.id.button_update2);
+        btn_update3 = findViewById(R.id.button_update3);
         btn_replay = findViewById(R.id.button_replay);
         btn_replay.setEnabled(false);
         tv_word = findViewById(R.id.textView_word);
@@ -255,25 +258,28 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
                 tv_desc.setText("---");
                 tv_syn.setText("---");
 
-
                 DUMP_FLAG = false;
+                if(!dataModelList.isEmpty())
+                    Log.d("Position and word to remove: ", String.valueOf(position) + " " + dataModelList.get(position).getWord() );
 
-                Log.d("SIZE  ", String.valueOf(dataModelList.size()));
                 if(dataModelList.size() > 1) {
-                    dataModelList.remove(position);
                     tv_word.setText(dataModelList.get(position).getWord() );
-                    tv_size.setText(String.valueOf(dataModelList.size()-1));
+                    dumpWord = dataModelList.get(position); //to dump if required
+                    dataModelList.remove(position);
+                    tv_size.setText(String.valueOf(dataModelList.size()));
                     wordListAdapter.notifyDataSetChanged();
                 }else{
                     Toast.makeText(getApplicationContext(), "LIST EMPTY!", Toast.LENGTH_SHORT).show();
                     dataModelList.clear();
                     wordListAdapter.notifyDataSetChanged();
                 }
-                dump_position = position;
-                if(dataModelList.size() > 1)
-                    position = random.nextInt(dataModelList.size()-1);
-                else
+                //dump_position = position;
+                if(dataModelList.size() > 1) {
+                    position = random.nextInt(dataModelList.size() - 1);
+                    Log.d("New Position and word : ", String.valueOf(position) + " " + dataModelList.get(position).getWord());
+                }else {
                     position = 0;
+                }
 
                 if(COUNT_FLAG){
                     count = Integer.parseInt( tv_count.getText().toString());
@@ -289,10 +295,12 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
             @Override
             public void onClick(View v) {
                 if(DUMP_FLAG == false) {
-                    tv_desc.setText(dataModelList.get(dump_position).getDesc());
-                    tv_syn.setText( dataModelList.get(dump_position).getSyn());
+//                    tv_desc.setText(dataModelList.get(dump_position).getDesc());
+//                    tv_syn.setText( dataModelList.get(dump_position).getSyn());
+                    tv_desc.setText(dumpWord.getDesc());
+                    tv_syn.setText( dumpWord.getSyn());
 
-                    dataModelList.add(dataModelList.get(dump_position));
+                    dataModelList.add(dumpWord);
                     DUMP_FLAG = true;
                 }
             }
@@ -320,6 +328,19 @@ public class MainActivity extends AppCompatActivity  implements EasyPermissions.
 
                 //set sheeet range
                 ssheetrange = "GWM2!A1:D";
+                getResultsFromApi();
+            }
+        });
+
+        btn_update3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dataModelList.clear();
+                wordListAdapter.notifyDataSetChanged();
+                tv_count.setText( String.valueOf(0));
+
+                //set sheeet range
+                ssheetrange = "GWM4!A1:D";
                 getResultsFromApi();
             }
         });
